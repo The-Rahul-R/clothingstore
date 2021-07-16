@@ -1,9 +1,15 @@
 <!DOCTYPE html>
+<?php
+session_start();
+require 'connection.php';
+$conn = Connect();
+?>
 <html>
 <title>W3.CSS Template</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" type="text/css" href="css/store.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -31,7 +37,7 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   </div>
   <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a> 
-  <a href="#footer"  class="w3-bar-item w3-button w3-padding">Subscribe</a>
+  <a href="index.php"  class="w3-bar-item w3-button w3-padding">Home Page</a>
 </nav>
 
 <!-- Top menu on small screens -->
@@ -53,14 +59,14 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <header class="w3-container w3-xlarge">
     <p class="w3-left">Jeans</p>
     <p class="w3-right">
-      <i class="fa fa-shopping-cart w3-margin-right">hey</i>
+        <a href="cart.php"><i class="fa fa-shopping-cart w3-margin-right"></i></a>
       <i class="fa fa-search"></i>
     </p>
   </header>
 
   <!-- Image header -->
   <div class="w3-display-container w3-container">
-    <img src="/w3images/jeans.jpg" alt="Jeans" style="width:100%">
+    <img src="images/cowboy.jpg" alt="Jeans" style="width:100%">
     <div class="w3-display-topleft w3-text-white" style="padding:24px 48px">
       <h1 class="w3-jumbo w3-hide-small">New arrivals</h1>
       <h1 class="w3-hide-large w3-hide-medium">New arrivals</h1>
@@ -73,64 +79,78 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
     <p>8 items</p>
   </div>
 
-  <!-- Product grid -->
-  <div class="w3-row w3-grayscale">
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <img src="/w3images/jeans1.jpg" style="width:100%">
-        <p>Ripped Skinny Jeans<br><b>$24.99</b></p>
-      </div>
-      <div class="w3-container">
-        <img src="/w3images/jeans2.jpg" style="width:100%">
-        <p>Mega Ripped Jeans<br><b>$19.99</b></p>
-      </div>
-    </div>
+  
+  
+  <?php
 
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <div class="w3-display-container">
-          <img src="/w3images/jeans2.jpg" style="width:100%">
-          <span class="w3-tag w3-display-topleft">New</span>
-          <div class="w3-display-middle w3-display-hover">
-            <button class="w3-button w3-black">Buy now <i class="fa fa-shopping-cart"></i></button>
-          </div>
-        </div>
-        <p>Mega Ripped Jeans<br><b>$19.99</b></p>
-      </div>
-      <div class="w3-container">
-        <img src="/w3images/jeans3.jpg" style="width:100%">
-        <p>Washed Skinny Jeans<br><b>$20.50</b></p>
-      </div>
-    </div>
 
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <img src="/w3images/jeans3.jpg" style="width:100%">
-        <p>Washed Skinny Jeans<br><b>$20.50</b></p>
-      </div>
-      <div class="w3-container">
-        <div class="w3-display-container">
-          <img src="/w3images/jeans4.jpg" style="width:100%">
-          <span class="w3-tag w3-display-topleft">Sale</span>
-          <div class="w3-display-middle w3-display-hover">
-            <button class="w3-button w3-black">Buy now <i class="fa fa-shopping-cart"></i></button>
-          </div>
-        </div>
-        <p>Vintage Skinny Jeans<br><b class="w3-text-red">$14.99</b></p>
-      </div>
-    </div>
+$sql = "SELECT * FROM PRODUCTS ORDER BY ID";
+$result = mysqli_query($conn, $sql);
+if (mysqli_num_rows($result) > 0)
+{
 
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <img src="/w3images/jeans4.jpg" style="width:100%">
-        <p>Vintage Skinny Jeans<br><b>$14.99</b></p>
-      </div>
-      <div class="w3-container">
-        <img src="/w3images/jeans1.jpg" style="width:100%">
-        <p>Ripped Skinny Jeans<br><b>$24.99</b></p>
-      </div>
+  while($row = mysqli_fetch_assoc($result)){
+  
+   
+
+?>
+<div class="w3-conatiner">
+
+<form method="post" action="cart.php?action=add&id=<?php echo $row["id"]; ?>">
+<div class="w3-panel w3-card w3-pale-blue" align="center";>
+<img src="<?php echo $row["images_path"]; ?>" class="" max-width:40%>
+<h5 class="w3-small"><?php echo $row["name"]; ?></h5>
+<h5 class="w3-small"><?php echo $row["desc"]; ?></h5>
+<h5 class="w3-small">&#8377; <?php echo $row["price"]; ?>/-</h5>
+
+<h5 class="w3-small">Quantity: <input type="number" min="1" max="25" name="quantity" class="w3-small" value="1" style="width: 60px;"> </h5>
+<input type="hidden" name="hidden_name" value="<?php echo $row["name"]; ?>">
+<input type="hidden" name="hidden_price" value="<?php echo $row["price"]; ?>">
+<input type="hidden" name="hidden_ID" value="<?php echo $row["id"]; ?>">
+<input type="hidden" name="hidden_image" value="<?php echo $row["images_path"]; ?>">
+<input type="submit" name="add" style="margin-top:5px;" class="w3-button w3-green" value="Add to Cart"><br><br>
+</div>
+</form>
+      
+     
+</div>
+
+<?php
+  }
+}
+
+else
+{
+    $sql = "SELECT * FROM PRODUCTS ORDER BY ID";
+    $result = mysqli_query($conn, $sql);
+    if (mysqli_num_rows($result) == 0){
+  ?>
+
+  <div class="container">
+    <div class="jumbotron">
+      <center>
+         <label style="margin-left: 5px;color: red;"> <h1>Oops! No clothes is available.We will solve this problem shortly.</h1> </label>
+        
+      </center>
+       
     </div>
   </div>
+
+  <?php
+    }
+
+}
+
+?>
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   <!-- Subscribe section -->
   <div class="w3-container w3-black w3-padding-32">
@@ -141,9 +161,9 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   </div>
   
   <!-- Footer -->
-  <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
-    <div class="w3-row-padding">
-      <div class="w3-col s4">
+  <footer class=" contactform w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
+    <div class=" w3-row-padding">
+      <div class="companydetails w3-col s4">
         <h4>Contact</h4>
         <p>Questions? Go ahead.</p>
         <form action="/action_page.php" target="_blank">
@@ -155,26 +175,15 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
         </form>
       </div>
 
-      <div class="w3-col s4">
-        <h4>About</h4>
-        <p><a href="#">About us</a></p>
-        <p><a href="#">We're hiring</a></p>
-        <p><a href="#">Support</a></p>
-        <p><a href="#">Find store</a></p>
-        <p><a href="#">Shipment</a></p>
-        <p><a href="#">Payment</a></p>
-        <p><a href="#">Gift card</a></p>
-        <p><a href="#">Return</a></p>
-        <p><a href="#">Help</a></p>
-      </div>
+     
 
-      <div class="w3-col s4 w3-justify">
+      <div class="  w3-col s4 w3-justify">
         <h4>Store</h4>
         <p><i class="fa fa-fw fa-map-marker"></i> Company Name</p>
         <p><i class="fa fa-fw fa-phone"></i> 0044123123</p>
-        <p><i class="fa fa-fw fa-envelope"></i> ex@mail.com</p>
+        <p><i class="fa fa-fw fa-envelope"></i> reliance123@mail.com</p>
         <h4>We accept</h4>
-        <p><i class="fa fa-fw fa-cc-amex"></i> Amex</p>
+        <p><i class="fa fa-fw fa-cc-amex"></i> Gpay</p>
         <p><i class="fa fa-fw fa-credit-card"></i> Credit Card</p>
         <br>
         <i class="fa fa-facebook-official w3-hover-opacity w3-large"></i>
@@ -187,7 +196,7 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
     </div>
   </footer>
 
-  <div class="w3-black w3-center w3-padding-24">Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a></div>
+  <div class="w3-black w3-center w3-padding-24">Happy Shopping</div>
 
   <!-- End page content -->
 </div>
